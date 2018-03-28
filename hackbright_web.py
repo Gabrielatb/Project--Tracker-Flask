@@ -32,10 +32,24 @@ def get_student():
     return html
 
 @app.route("/project")
-def display_project:
+def display_project():
    
-    project_info = request.args.get('title')
+    title = request.args.get('title')
+    # github = request.args.get('github')
+    # list over all the students who have completed that project and the grade 
+    title, description, max_grade = hackbright.get_project_by_title(title)
+    grades = hackbright.get_grades_by_title(title)
+    students = []
+    for github, grade in grades:
+        first, last, github = hackbright.get_student_by_github(github)
+        info = (first, last, github, grade)
+        students.append(info)
 
+    return render_template("project.html",
+                           title=title,
+                           max_grade=max_grade,
+                           description=description,
+                           students=students)
 
 @app.route("/new-student")
 def new_student_form():
